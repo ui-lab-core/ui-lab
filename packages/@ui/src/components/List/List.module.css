@@ -81,10 +81,10 @@
     background-color: slot(item, background, var(--background, transparent));
     color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .item[data-list-layout="columns"] {
@@ -107,7 +107,7 @@
 
   .disclosure > svg {
     transform: rotate(-90deg);
-    transition: transform 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));
+    transition: transform var(--toggle-duration, var(--duration-moderate, 200ms)) var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .disclosure[data-expanded="true"] > svg {
@@ -120,13 +120,13 @@
   }
 
   .item:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
   }
 
   /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted
      themselves, so the highlight cannot be gated on the root's own keyboard mode. */
   .item[data-highlighted="true"] {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
   }
 
   .item:hover:not([data-disabled="true"]),
@@ -163,7 +163,7 @@
   }
 
   /* --hover-duration is inherited, and a hovered or highlighted row sets it to the
-     enter duration (0ms) for its own background swap. Nested controls own their
+     enter duration for its own background swap. Nested controls own their
      transitions, so reset the property to the guaranteed-invalid value and let each
      one fall back to its own leave duration. */
   .control,
@@ -255,7 +255,8 @@
     justify-content: center;
     gap: var(--item-inset);
     pointer-events: none;
-    @apply flex p-0 opacity-70 transition-opacity;
+    @apply flex p-0 opacity-70;
+    transition: opacity var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     padding-inline: var(--item-inset);
   }
 
@@ -303,5 +304,24 @@
   .footer,
   .divider {
     min-inline-size: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .action-group,
+    .actions,
+    .checkbox,
+    .control,
+    .desc,
+    .disclosure,
+    .divider,
+    .footer,
+    .header,
+    .item,
+    .media,
+    .meta,
+    .root,
+    .title {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

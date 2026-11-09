@@ -18,10 +18,10 @@ describe("List.controls", () => {
     expect(screen.getByRole("switch")).toBeInTheDocument();
   });
 
-  it("passes isSelected to the Switch", () => {
+  it("passes selected to the Switch", () => {
     renderList(
       <List.Item value="1">
-        <List.Switch aria-label="Toggle" isSelected />
+        <List.Switch aria-label="Toggle" selected />
       </List.Item>,
     );
     expect(screen.getByRole("switch")).toHaveAttribute("aria-checked", "true");
@@ -154,7 +154,7 @@ describe("List.controls", () => {
   it("renders a checkbox input", () => {
     renderList(
       <List.Item value="1">
-        <List.Checkbox checked={false} onChange={() => {}} />
+        <List.Checkbox selected={false} onChange={() => {}} />
       </List.Item>,
     );
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
@@ -163,7 +163,7 @@ describe("List.controls", () => {
   it("the interactive checkbox is not readOnly and does not have tabIndex -1", () => {
     renderList(
       <List.Item value="1">
-        <List.Checkbox checked={false} onChange={() => {}} />
+        <List.Checkbox selected={false} onChange={() => {}} />
       </List.Item>,
     );
     const checkbox = screen.getByRole("checkbox");
@@ -171,10 +171,10 @@ describe("List.controls", () => {
     expect(checkbox).not.toHaveAttribute("tabindex", "-1");
   });
 
-  it("passes checked state through to the checkbox", () => {
+  it("passes selected state through to the checkbox", () => {
     renderList(
       <List.Item value="1">
-        <List.Checkbox checked onChange={() => {}} />
+        <List.Checkbox selected onChange={() => {}} />
       </List.Item>,
     );
     expect(screen.getByRole("checkbox")).toBeChecked();
@@ -184,28 +184,28 @@ describe("List.controls", () => {
     const onChange = vi.fn();
     renderList(
       <List.Item value="1">
-        <List.Checkbox checked={false} onChange={onChange} />
+        <List.Checkbox selected={false} onChange={onChange} />
       </List.Item>,
     );
     await userEvent.click(screen.getByRole("checkbox"));
     expect(onChange).toHaveBeenCalled();
   });
 
-  it("fires onCheckedChange with the next checked state", async () => {
-    const onCheckedChange = vi.fn();
+  it("fires onChange with the next selected state", async () => {
+    const onChange = vi.fn();
     renderList(
       <List.Item value="1">
-        <List.Checkbox checked={false} onCheckedChange={onCheckedChange} />
+        <List.Checkbox selected={false} onChange={onChange} />
       </List.Item>,
     );
     await userEvent.click(screen.getByRole("checkbox"));
-    expect(onCheckedChange).toHaveBeenCalledWith(true, expect.any(Object));
+    expect(onChange).toHaveBeenCalledWith(true);
   });
 
   it("List.Checkbox (interactive) wrapper has the control class", () => {
     const { container } = renderList(
       <List.Item value="1">
-        <List.Checkbox checked={false} onChange={() => {}} />
+        <List.Checkbox selected={false} onChange={() => {}} />
       </List.Item>,
     );
     expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument();
@@ -214,7 +214,7 @@ describe("List.controls", () => {
   it("List.Checkbox supports start placement", () => {
     const { container } = renderList(
       <List.Item value="1">
-        <List.Checkbox checked={false} placement="start" onChange={() => {}} />
+        <List.Checkbox selected={false} placement="start" onChange={() => {}} />
       </List.Item>,
     );
     expect(container.querySelector(`.${styles.control}`)).toHaveAttribute(

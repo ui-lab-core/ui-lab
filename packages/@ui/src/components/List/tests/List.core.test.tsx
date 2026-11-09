@@ -99,7 +99,7 @@ describe("List.core", () => {
           <List.Media>Media</List.Media>
           <List.Title>Title</List.Title>
           <List.Desc>Description</List.Desc>
-          <List.Checkbox checked={false} onChange={() => {}} />
+          <List.Checkbox selected={false} onChange={() => {}} />
           <List.CheckboxIndicator checked />
         </List.Item>
         <List.Footer>Footer Text</List.Footer>

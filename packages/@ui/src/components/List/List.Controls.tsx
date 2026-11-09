@@ -20,16 +20,9 @@ import { markListItemSlot } from "./list.item-layout";
 
 /** Interactive checkbox inside a list item */
 const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheckboxProps>(
-  ({ checked, className, onChange, onCheckedChange, placement = "end", ...props }, ref) => {
+  ({ className, placement = "end", ...props }, ref) => {
     const { styles: listStyles } = useListContext();
     const { styles: itemStyles } = useListItemContext();
-    const handleChange = React.useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        onChange?.(event);
-        onCheckedChange?.(event.currentTarget.checked, event);
-      },
-      [onChange, onCheckedChange],
-    );
 
     return (
       <div
@@ -40,8 +33,6 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheck
       >
         <UICheckbox
           ref={ref}
-          state={checked !== undefined ? { checked } : undefined}
-          onChange={handleChange}
           {...props}
         />
       </div>
@@ -65,7 +56,7 @@ const CheckboxIndicator = React.forwardRef<HTMLDivElement, ListCheckboxIndicator
         data-slot="item.checkbox"
         data-checked={checked ? "true" : "false"}
       >
-        <UICheckbox state={{ checked: Boolean(checked) }} readOnly tabIndex={-1} />
+        <UICheckbox selected={Boolean(checked)} readOnly tabIndex={-1} />
       </div>
     );
   },

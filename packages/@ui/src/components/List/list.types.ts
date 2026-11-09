@@ -259,11 +259,7 @@ export interface ListCheckboxProps extends React.ComponentPropsWithoutRef<typeof
    * @default "end"
    */
   placement?: "start" | "end";
-  /**
-   * Receives the next checked value after the nested checkbox changes.
-   * @category Events
-   */
-  onCheckedChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void;
+
 }
 
 export interface ListCheckboxIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -71,8 +71,8 @@ describe("List.activation", () => {
         <List.Item value="1">
           <List.Checkbox
             aria-label="Toggle task"
-            checked={checked}
-            onChange={(event) => setChecked(event.target.checked)}
+            selected={checked}
+            onChange={setChecked}
           />
         </List.Item>
       );
@@ -103,7 +103,7 @@ describe("List.activation", () => {
 
       return (
         <List.Item value="1">
-          <List.Switch aria-label="Dark mode" isSelected={isSelected} onChange={setIsSelected} />
+          <List.Switch aria-label="Dark mode" selected={isSelected} onChange={setIsSelected} />
         </List.Item>
       );
     }
@@ -236,8 +236,8 @@ describe("List.activation", () => {
           <List.Checkbox
             aria-label="Enable notifications"
             placement="start"
-            checked={checked}
-            onCheckedChange={setChecked}
+            selected={checked}
+            onChange={setChecked}
           />
           <span>Notifications</span>
           <List.Select selectedKey={delivery} onSelectionChange={setDelivery}>
@@ -276,7 +276,7 @@ describe("List.activation", () => {
     const onRowClick = vi.fn();
     renderList(
       <List.Item value="1" onClick={onRowClick}>
-        <List.Checkbox aria-label="Toggle task" checked={false} onChange={onChange} />
+        <List.Checkbox aria-label="Toggle task" selected={false} onChange={onChange} />
       </List.Item>,
     );
 
