@@ -12,6 +12,7 @@ import { api } from "@ui-lab/backend/convex/_generated/api";
 import { Button } from "ui-lab-components/button";
 import { Group } from "ui-lab-components/group";
 import { ROUTES } from "@/shared/lib/routes";
+import { canOpenPayments } from "@/shared/lib/payments";
 import { PlanPrice } from "./plan-card";
 
 const SIGN_IN_URL = `${ROUTES.signIn}?redirect_url=${encodeURIComponent(ROUTES.supporter)}`;
@@ -123,6 +124,7 @@ function SupporterCheckoutButton({
         }
         onPress={async () => {
           if (isLeaving) return;
+          if (!canOpenPayments()) return;
           setIsLeaving(true);
           setError(null);
 

@@ -31,6 +31,7 @@ import { Switch } from "ui-lab-components/switch";
 import { SUPPORTER_PLAN } from "@ui-lab-core/library/access";
 import { cn } from "@/shared/lib/utils";
 import { ROUTES } from "@/shared/lib/routes";
+import { canOpenPayments } from "@/shared/lib/payments";
 
 /**
  * The account surface is one presentational page whose only live data are the
@@ -103,6 +104,7 @@ function ManageBillingButton() {
         icon={{ right: <ChevronRight className="size-4" /> }}
         onPress={async () => {
           if (isLeaving.current) return;
+          if (!canOpenPayments()) return;
           isLeaving.current = true;
           setError(null);
           try {

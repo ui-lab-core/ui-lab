@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect } from "react";
 import { IconProvider } from "ui-lab-components/icon-provider";
+import { Toaster } from "ui-lab-components/toast";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { AppProvider, useApp } from "@/features/theme/lib/app-context";
@@ -89,6 +90,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           <KeyboardShortcuts />
           {/* <PerfOverlay /> */}
           {children}
+          <Toaster />
         </WwwDocsHost>
       </AppProvider>
     </IconProvider>
