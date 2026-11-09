@@ -25,6 +25,7 @@ export const headerTabs: HeaderTab[] = [
   { id: "documentation", label: "Documentation", path: "/docs" },
   { id: "components", label: "Library", path: "/library" },
   { id: "workshop", label: "Workshop", path: "/workshop/elements" },
+  { id: "pricing", label: "Pricing", path: "http://localhost:3000/supporter" },
 ];
 
 export const libraryItems = [
@@ -36,6 +37,7 @@ export const getActiveLibraryItem = (pathname: string): string | undefined =>
   libraryItems.find((item) => pathname.startsWith(item.path))?.id;
 
 export const getActiveHeaderTab =(pathname: string): string | undefined => {
+  if (pathname.startsWith("/supporter")) return "pricing";
   if (pathname.startsWith("/library")) return "components";
   if (pathname.startsWith("/workshop")) return "workshop";
   if (

@@ -291,6 +291,7 @@ export default function Header({ pathname }: HeaderProps) {
               <Button
                 size="sm"
                 variant="outline"
+                className="rounded-full"
                 href="/config"
                 icon={<Icon id="paperclip" size={20} />}
               >
@@ -299,6 +300,7 @@ export default function Header({ pathname }: HeaderProps) {
               <Button
                 variant="outline"
                 size="sm"
+                className="rounded-full"
                 href="https://github.com/ui-lab-core/ui-lab/issues"
                 icon={<Icon id="plus-circle" size={20} />}
               >
