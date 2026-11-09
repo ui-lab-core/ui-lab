@@ -22,7 +22,7 @@ import {
   useCommandEngine,
 } from "./Command.shared";
 
-const transitionDuration = 180;
+const transitionDuration = 150;
 const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
 
 /** Portal destination for a floating command palette, matching Toaster's container contract. */
@@ -241,8 +241,6 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     } = engine;
     const animatedHeightRef = useAnimatedSize<HTMLDivElement>({
       dimensions: "height",
-      duration: 280,
-      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       trigger: `${searchValue}\u0000${filteredItems.map((item) => item.id).join("\u0000")}`,
     });
     const surfaceRef = useMergeRefs(modalRef, animatedHeightRef, ref);
@@ -253,7 +251,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       present,
       state: presenceState,
       finishExit,
-    } = usePresence(mounted && (embedded || portalTarget !== null) && overlayState.isOpen, transitionDuration);
+    } = usePresence(mounted && (embedded || portalTarget !== null) && overlayState.isOpen, transitionDuration, { elementRef: modalRef });
     const wasOpenRef = React.useRef(false);
     React.useEffect(() => {
       if (overlayState.isOpen) {

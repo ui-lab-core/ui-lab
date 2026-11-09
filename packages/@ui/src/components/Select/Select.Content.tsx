@@ -368,10 +368,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const getOffset = () => {
       const group = groupContext?.groupRef?.current;
       const segment = wrapperRef.current;
-      if (!group || !segment) return 2;
+      if (!group || !segment) return 4;
       const groupRect = group.getBoundingClientRect();
       const segmentRect = segment.getBoundingClientRect();
-      return Math.max(groupRect.bottom - segmentRect.bottom, segmentRect.top - groupRect.top) + 4;
+      return Math.max(groupRect.bottom - segmentRect.bottom, segmentRect.top - groupRect.top) + 6;
     };
     const getAnchor = () => wrapperRef.current;
 
@@ -790,6 +790,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const showContent = isOpen && isPositioned;
 
     const { animationStyles } = useFloatAnimation({
+      element: contentElement,
       open: isOpen,
       isPositioned,
       placement,

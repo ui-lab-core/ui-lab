@@ -19,8 +19,8 @@
     opacity: 0;
     transform: translate(0, 0);
     transition:
-      opacity 0.15s ease-out,
-      transform 0.15s ease-out;
+      opacity var(--enter-duration, var(--duration-normal, 150ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--enter-duration, var(--duration-normal, 150ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .content[data-open="true"] {
@@ -48,5 +48,16 @@
 
   .hint :global(.badge) {
     --background-radius: var(--radius-xs, 0.25rem);
+  }
+  .content:not([data-open="true"]) {
+    transition-duration: var(--exit-duration, var(--duration-normal, 150ms));
+    transition-timing-function: var(--exit-easing, var(--ease-in, cubic-bezier(0.4, 0, 1, 1)));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content {
+      transform: none !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

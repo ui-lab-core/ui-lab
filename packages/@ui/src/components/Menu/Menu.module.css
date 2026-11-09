@@ -38,8 +38,8 @@
     border-radius: var(--radius);
     outline: none;
     transition:
-      opacity 180ms var(--ease-snappy-pop, ease-out),
-      transform 180ms var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
+      opacity var(--enter-duration, var(--duration-moderate, 200ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--enter-duration, var(--duration-moderate, 200ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     .viewport {
       padding: calc(var(--padding) / 2);
@@ -157,6 +157,14 @@
       /* Match the row's line box (not --leading-code's taller 1.5) so a shortcut
          can't inflate the item beyond the shared row height. */
       line-height: var(--leading-sm, 1.25rem);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .overlay,
+    .panel,
+    .trigger {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

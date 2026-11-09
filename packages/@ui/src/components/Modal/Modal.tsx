@@ -14,7 +14,7 @@ import { useControlledState } from "@/hooks/useControlledState";
 import { usePresence } from "@/hooks/usePresence";
 import css from "./Modal.module.css";
 
-const transitionDuration = 180;
+const transitionDuration = 150;
 
 interface ModalStyleSlots {
   root?: Style;
@@ -176,7 +176,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       setMounted(true);
     }, []);
 
-    const { present, state, finishExit } = usePresence(mounted && isOpen, transitionDuration, { settleExit: true });
+    const { present, state, finishExit } = usePresence(mounted && isOpen, transitionDuration, { settleExit: true, elementRef: modalRef });
 
     // Use forwardRef callback to expose modalRef
     React.useImperativeHandle(ref, () => modalRef.current as HTMLDivElement);

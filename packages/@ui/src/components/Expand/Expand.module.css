@@ -46,10 +46,10 @@
     outline: none;
     box-shadow: none;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-decelerate, ease-out)),
-      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-decelerate, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      opacity var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .trigger:focus,
@@ -89,7 +89,7 @@
 
   @media (hover: hover) {
     .trigger:not([data-disabled="true"]):hover {
-      --hover-duration: var(--hover-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     }
 
     .trigger:not([data-disabled="true"]) .icon:hover {
@@ -98,7 +98,7 @@
   }
 
   .icon > * {
-    transition: transform 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));
+    transition: transform var(--toggle-duration, var(--duration-moderate, 200ms)) var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .icon > svg {
@@ -158,7 +158,7 @@
     display: grid;
     overflow: hidden;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 200ms var(--ease-decelerate, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    transition: grid-template-rows var(--layout-duration, var(--duration-moderate, 200ms)) var(--layout-easing, var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1)));
   }
 
   .content[data-selected="true"] {
@@ -169,7 +169,7 @@
   .content[data-from="right"] {
     grid-template-rows: 1fr;
     grid-template-columns: 0fr;
-    transition: grid-template-columns 200ms var(--ease-decelerate, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+    transition: grid-template-columns var(--layout-duration, var(--duration-moderate, 200ms)) var(--layout-easing, var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1)));
   }
 
   .content[data-from="left"][data-selected="true"],
@@ -187,5 +187,18 @@
 
   .divider {
     margin: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content,
+    .content-inner,
+    .divider,
+    .expand,
+    .icon,
+    .scope,
+    .title,
+    .trigger {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

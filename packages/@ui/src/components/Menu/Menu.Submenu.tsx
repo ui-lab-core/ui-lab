@@ -421,6 +421,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
     );
 
     const { isExiting, animationStyles } = useFloatAnimation({
+      element: floatingElement,
       open: effectiveOpen,
       isPositioned,
       placement,

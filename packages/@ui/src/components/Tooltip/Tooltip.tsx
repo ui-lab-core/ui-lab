@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { useTooltip, mergeProps } from "react-aria";
 import { useFloating } from "../../floating/react/useFloating";
 import { flip } from "../../floating/core/middleware/flip";
-import { offset } from "../../floating/core/middleware/offset";
+import { offset as offsetMiddleware } from "../../floating/core/middleware/offset";
 import { shift } from "../../floating/core/middleware/shift";
 import { arrow } from "../../floating/core/middleware/arrow";
 import { autoUpdate } from "../../floating/dom/autoUpdate";
@@ -20,6 +20,7 @@ import css from "./Tooltip.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { type Style } from "@/lib/cn";
 import { useControlledState } from "@/hooks/useControlledState";
+import { prefersReducedMotion, transitionDuration } from "@/lib/motion";
 import { getArrowShapeOffset, getFrameSideFromPlacement } from "@/floating/arrow-positioning";
 
 const ARROW_PATH = "M 0 0 C 3 0 4 -9 6 -9 C 8 -9 9 0 12 0";
@@ -27,10 +28,8 @@ const ARROW_WIDTH = 12;
 const ARROW_HEIGHT = 9;
 const ARROW_PADDING = 8;
 const TOOLTIP_GAP = 4;
-const ARROW_POSITIONING_SIZE = ARROW_HEIGHT;
 const DEFAULT_SHOW_DELAY_MS = 600;
 const SWAP_WINDOW_MS = 150;
-const EXIT_ANIMATION_MS = 160;
 
 let lastCloseTime = 0;
 let lastOpenTime = 0;
@@ -108,6 +107,8 @@ export interface TooltipProps {
   content: React.ReactNode;
   /** Preferred side of the trigger where the tooltip appears */
   position?: TooltipPosition;
+  /** Distance in pixels between the trigger and the tooltip. Defaults to 4. */
+  offset?: number;
   /**
    * Class for the trigger wrapper `<span>`, applied with `styles.trigger`. Around an
    * element child the wrapper is `display: contents` and generates no box, so sizing,
@@ -143,6 +144,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       children,
       content,
       position = "top",
+      offset = TOOLTIP_GAP,
       className,
       delay = DEFAULT_SHOW_DELAY_MS,
       disabled = false,
@@ -157,8 +159,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     _ref,
   ) => {
     const triggerWrapperRef = useRef<HTMLSpanElement>(null);
-    const triggerRef = useRef<HTMLElement>(null);
+    const triggerRef = useRef<Element>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
     const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null);
     const [shouldRender, setShouldRender] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
@@ -203,7 +206,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
       middleware: [
-        offset(TOOLTIP_GAP + ARROW_POSITIONING_SIZE),
+        offsetMiddleware(offset + (showArrow ? ARROW_HEIGHT : 0)),
         flip(),
         shift({ padding: 8 }),
         showArrow ? arrow({ element: arrowElement, padding: ARROW_PADDING }) : null,
@@ -248,10 +251,6 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         // If another tooltip opens within the window, pendingExit cancels.
         startSwapTimer(() => {
           setIsVisible(false);
-          startUnmountTimer(() => {
-            setShouldRender(false);
-            pendingExit = null;
-          }, EXIT_ANIMATION_MS);
         }, SWAP_WINDOW_MS);
 
         pendingExit = () => {
@@ -263,10 +262,29 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       }
     }, [state.isOpen]);
 
+    // Read after the closed styles commit so theme overrides and reduced motion
+    // determine the lifetime, rather than a timer unrelated to the CSS duration.
+    useLayoutEffect(() => {
+      if (!shouldRender || state.isOpen || isVisible) return;
+      const finishExit = () => {
+        setShouldRender(false);
+        pendingExit = null;
+      };
+      const duration = transitionDuration(contentRef.current, 150);
+      if (duration === 0) finishExit();
+      else startUnmountTimer(finishExit, duration);
+      return clearUnmountTimer;
+    }, [shouldRender, state.isOpen, isVisible, startUnmountTimer, clearUnmountTimer]);
+
     // Closing must cancel opening frames during the commit, not in a passive
     // effect after a pending frame has had a chance to make the tooltip visible.
     useLayoutEffect(() => {
       if (shouldRender && state.isOpen && isPositioned) {
+        if (prefersReducedMotion()) {
+          setIsVisible(true);
+          setIsInstant(false);
+          return;
+        }
         if (isInstant) {
           setIsVisible(true);
           const frame = requestAnimationFrame(() => setIsInstant(false));
@@ -293,11 +311,11 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     useLayoutEffect(() => {
       const wrapper = triggerWrapperRef.current;
       const reference =
-        isElementChild && wrapper?.firstElementChild instanceof HTMLElement
+        isElementChild && wrapper?.firstElementChild instanceof Element
           ? wrapper.firstElementChild
           : wrapper;
 
-      (triggerRef as React.MutableRefObject<HTMLElement | null>).current = reference;
+      (triggerRef as React.MutableRefObject<Element | null>).current = reference;
       refs.setReference(reference);
     }, [children, isElementChild, refs]);
 
@@ -326,8 +344,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         setIsFocusVisible(focusVisible);
         state.open(true);
       };
-      const handleFocusOut = (event: FocusEvent) => {
-        if (event.relatedTarget instanceof Node && trigger.contains(event.relatedTarget)) {
+      const handleFocusOut = (event: Event) => {
+        const { relatedTarget } = event as FocusEvent;
+        if (relatedTarget instanceof Node && trigger.contains(relatedTarget)) {
           return;
         }
 
@@ -350,32 +369,31 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     }, [children, disabled, state]);
 
     const trigger = triggerRef.current;
-    const isTriggerVisible = !!(trigger && (trigger.offsetWidth > 0 || trigger.offsetHeight > 0));
-    const triggerElement =
-      isElementChild ? (
-        <span
-          ref={triggerWrapperRef}
-          className={cn(css.trigger, className, resolved.trigger)}
-          data-disabled={disabled ? "true" : undefined}
-          data-hovered={isHovered ? "true" : "false"}
-          data-focused={isFocused ? "true" : "false"}
-          data-focus-visible={isFocusVisible ? "true" : "false"}
-        >
-          {children}
-        </span>
-      ) : (
-        <span
-          ref={triggerWrapperRef}
-          className={cn(css.trigger, className, resolved.trigger)}
-          style={{ display: "inline-block" }}
-          data-disabled={disabled ? "true" : undefined}
-          data-hovered={isHovered ? "true" : "false"}
-          data-focused={isFocused ? "true" : "false"}
-          data-focus-visible={isFocusVisible ? "true" : "false"}
-        >
-          {children}
-        </span>
-      );
+    const isTriggerVisible = !!trigger && trigger.getClientRects().length > 0;
+    const triggerElement = isElementChild ? (
+      <span
+        ref={triggerWrapperRef}
+        className={cn(css.trigger, className, resolved.trigger)}
+        data-disabled={disabled ? "true" : undefined}
+        data-hovered={isHovered ? "true" : "false"}
+        data-focused={isFocused ? "true" : "false"}
+        data-focus-visible={isFocusVisible ? "true" : "false"}
+      >
+        {children}
+      </span>
+    ) : (
+      <span
+        ref={triggerWrapperRef}
+        className={cn(css.trigger, className, resolved.trigger)}
+        style={{ display: "inline-block" }}
+        data-disabled={disabled ? "true" : undefined}
+        data-hovered={isHovered ? "true" : "false"}
+        data-focused={isFocused ? "true" : "false"}
+        data-focus-visible={isFocusVisible ? "true" : "false"}
+      >
+        {children}
+      </span>
+    );
 
     return (
       <>
@@ -392,6 +410,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
               }}
             >
               <div
+                ref={contentRef}
                 className={cn("content", css.content, resolved.content)}
                 data-open={isVisible && isTriggerVisible ? "true" : "false"}
                 data-instant={isInstant || !isTriggerVisible ? "true" : undefined}

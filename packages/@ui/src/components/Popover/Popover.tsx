@@ -119,6 +119,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
 
     const triggerRef = React.useRef<HTMLDivElement>(null);
     const popoverContentRef = React.useRef<HTMLDivElement>(null);
+    const animationRef = React.useRef<HTMLDivElement>(null);
     const [arrowElement, setArrowElement] = React.useState<HTMLDivElement | null>(null);
 
     const [isOpen, setOpen] = useControlledState(
@@ -184,8 +185,8 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
 
     const { present, state: presenceState, finishExit } = usePresence(
       state.isOpen && isPositioned,
-      disableAnimations ? 0 : 200,
-      { settleExit: true },
+      disableAnimations ? 0 : 150,
+      { settleExit: true, elementRef: animationRef },
     );
     const isVisible = presenceState === "entered";
 
@@ -263,7 +264,9 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
               }}
             >
               <div
+                ref={animationRef}
                 className={cn("content", css.content, resolved.content)}
+                data-visible={isVisible ? "true" : "false"}
                 data-instant={disableAnimations ? "true" : undefined}
                 onTransitionEnd={(event) => {
                   if (event.target === event.currentTarget && event.propertyName === "opacity") {

@@ -27,8 +27,8 @@
     backdrop-filter: blur(0px);
     pointer-events: none;
     transition:
-      opacity 180ms var(--ease-snappy-pop, ease-out),
-      backdrop-filter 180ms var(--ease-snappy-pop, ease-out);
+      opacity var(--enter-duration, var(--duration-moderate, 200ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      backdrop-filter var(--enter-duration, var(--duration-moderate, 200ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .overlay[data-state="entered"] .backdrop {
@@ -54,8 +54,8 @@
     pointer-events: auto;
     overflow: hidden;
     transition:
-      opacity 180ms var(--ease-snappy-pop, ease-out),
-      transform 180ms var(--ease-snappy-pop, ease-out);
+      opacity var(--enter-duration, var(--duration-moderate, 200ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--enter-duration, var(--duration-moderate, 200ms)) var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .overlay[data-state="entered"] .panel {
@@ -109,13 +109,13 @@
     border: none;
     color: var(--foreground);
     transition:
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--press-duration, var(--duration-fast, 100ms))
+        var(--press-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &[data-hovered="true"] {
-      --hover-duration: var(--hover-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     }
 
     &[data-pressed="true"] {
@@ -195,6 +195,27 @@
   @media (max-width: 640px) {
     .panel {
       margin: 1rem;
+    }
+  }
+  .overlay[data-state="exiting"] :is(.panel, .backdrop) {
+    transition-duration: var(--exit-duration, var(--duration-normal, 150ms));
+    transition-timing-function: var(--exit-easing, var(--ease-in, cubic-bezier(0.4, 0, 1, 1)));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .backdrop,
+    .body-scroll,
+    .body-static,
+    .close,
+    .close-icon,
+    .content,
+    .footer,
+    .header,
+    .overlay,
+    .panel,
+    .spacer,
+    .title {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

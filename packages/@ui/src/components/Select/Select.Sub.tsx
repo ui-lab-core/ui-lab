@@ -656,6 +656,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
     );
 
     const { isExiting, animationStyles } = useFloatAnimation({
+      element: contentElement,
       open: effectiveOpen,
       isPositioned,
       placement,
