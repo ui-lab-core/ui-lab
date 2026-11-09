@@ -379,7 +379,7 @@ export function NotificationSettings() {
                 {row.desc}
               </List.Desc>
             </div>
-            <Switch defaultChecked aria-label={row.title} className="ml-auto" />
+            <Switch selected aria-label={row.title} className="ml-auto" />
           </List.Item>
           {index < NOTIFICATION_ROWS.length - 1 ? <List.Divider spacing="none" /> : null}
         </Fragment>

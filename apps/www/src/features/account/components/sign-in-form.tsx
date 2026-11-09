@@ -10,6 +10,7 @@ import { Divider } from "ui-lab-components/divider";
 import { Flex } from "ui-lab-components/flex";
 import { Input } from "ui-lab-components/input";
 import { Label } from "ui-lab-components/label";
+import { Logo } from "@/features/layout/components/logo";
 
 /**
  * Custom Clerk sign-in built on the signal-based `useSignIn()` (SignInFuture)
@@ -122,9 +123,15 @@ export function SignInForm() {
   const globalError = errors.global?.[0]?.message;
 
   return (
-    <Flex direction="column" gap={8} w="full" className="max-w-sm">
+    <Flex
+      direction="column"
+      gap={6}
+      w="full"
+      className="max-w-sm rounded-xl border border-background-700 bg-background-950 p-7"
+    >
       <Flex direction="column" gap={2}>
-        <h1 className="text-2xl font-medium text-foreground-50">
+        <Logo className="text-foreground-50" />
+        <h1 className="text-xl font-medium text-foreground-50">
           {step === "credentials" ? "Sign in" : "Check your email"}
         </h1>
         <p className="text-foreground-400">
@@ -133,8 +140,6 @@ export function SignInForm() {
             : `Enter the code sent to ${signIn.identifier ?? "your email"}.`}
         </p>
       </Flex>
-
-      <Divider variant="dashed" size="sm" />
 
       {(globalError || unsupported) && (
         <Banner variant="danger" role="alert" aria-live="assertive">
@@ -148,6 +153,19 @@ export function SignInForm() {
       {step === "credentials" ? (
         <form onSubmit={submitCredentials} noValidate>
           <Flex direction="column" gap={6}>
+            <Button
+              variant="secondary"
+              icon={<GoogleIcon />}
+              disabled={pending}
+              onPress={continueWithGoogle}
+            >
+              Continue with Google
+            </Button>
+            <Flex align="center" gap={3}>
+              <Divider className="flex-1" />
+              <span className="text-sm text-foreground-400">or</span>
+              <Divider className="flex-1" />
+            </Flex>
             <div>
               <Label
                 htmlFor="identifier"
@@ -163,7 +181,6 @@ export function SignInForm() {
                 type="email"
                 autoComplete="email"
                 required
-                autoFocus
                 disabled={pending}
                 error={!!identifierError}
                 aria-invalid={!!identifierError}
@@ -193,15 +210,6 @@ export function SignInForm() {
             </div>
             <Button type="submit" variant="primary" disabled={pending}>
               {pending ? "Signing in…" : "Sign in"}
-            </Button>
-            <p className="text-center text-foreground-400">or</p>
-            <Button
-              variant="secondary"
-              icon={<GoogleIcon />}
-              disabled={pending}
-              onPress={continueWithGoogle}
-            >
-              Continue with Google
             </Button>
           </Flex>
         </form>
