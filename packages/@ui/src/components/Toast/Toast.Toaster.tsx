@@ -3,12 +3,12 @@
 import React, { useMemo, useEffect, useLayoutEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useToastStore, ToastPosition, ToastProps } from "./Toast.Store";
-import { Toast } from "./Toast";
-import gsap from "gsap";
+import { Toast, animateToastEntrance } from "./Toast";
+import { toastAnimation } from "./utils/animation";
+import { toastMotion } from "./utils/motion";
 
 const GAP = 14;
 const MAX_VISIBLE = 3;
-const STACK_REFLOW_DURATION = 0.55;
 const STANDALONE_DISMISS_OFFSET = 20;
 
 interface StackTarget {
@@ -19,12 +19,12 @@ interface StackTarget {
   opacity: number;
 }
 
-function readGsapNumber(
+function readAnimationNumber(
   element: HTMLElement,
   property: "y" | "scale" | "opacity",
   fallback: number,
 ) {
-  const value = gsap.getProperty(element, property);
+  const value = toastAnimation.getProperty(element, property);
   const number = typeof value === "number" ? value : Number.parseFloat(String(value));
   return Number.isFinite(number) ? number : fallback;
 }
@@ -81,6 +81,16 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const isTop = position.includes("top");
 
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const toastElements = toastRefsMap.current;
+    return () => {
+      toastAnimation.stop(container);
+      toastElements.forEach((element) => toastAnimation.stop(element));
+      prevVisibleIdsRef.current = new Set();
+    };
+  }, []);
+
   const [isHovering, setIsHovering] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isDraggingRef = useRef(false);
@@ -108,6 +118,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     const currentActiveIds = new Set(toasts.map((t) => t.id));
     const openToasts = toasts.filter((t) => t.open);
     const targets: StackTarget[] = [];
+    const entrances: Array<{ target: StackTarget; direction: "top" | "bottom" }> = [];
 
     let cumulativeY = 0;
     let activeIndex = 0; // Track visual index separately from array index
@@ -122,7 +133,6 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
       }
 
       const isNewlyVisible = !prevVisibleIdsRef.current.has(toast.id);
-      const isFromTop = toast.spawnDirection === "top";
       const height = el.offsetHeight || 60;
 
       let y = 0;
@@ -163,12 +173,14 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         }
       }
 
-      if (isNewlyVisible && isFromTop) {
-        const startY = isTop ? y + 30 : y - 30;
-        gsap.set(el, { y: startY, opacity: 0, scale: scale * 0.9 });
+      const target = { id: toast.id, element: el, y, scale, opacity };
+      if (isNewlyVisible) {
+        // Only the inner toast enters; its wrapper starts at its stack target.
+        toastAnimation.set(el, { y, scale, opacity });
+        entrances.push({ target, direction: toast.spawnDirection ?? (isTop ? "top" : "bottom") });
       }
 
-      targets.push({ id: toast.id, element: el, y, scale, opacity });
+      targets.push(target);
       el.style.pointerEvents = pointerEvents;
 
       activeIndex++; // Only increment for active toasts
@@ -191,11 +203,11 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         .slice(index + 1)
         .find((candidate) => candidate.open && targetById.has(candidate.id));
       const followingTarget = followingToast ? targetById.get(followingToast.id) : undefined;
-      const previousY = readGsapNumber(element, "y", 0);
+      const previousY = readAnimationNumber(element, "y", 0);
 
       let displacement = STANDALONE_DISMISS_OFFSET;
       if (followingTarget) {
-        const followingY = readGsapNumber(followingTarget.element, "y", followingTarget.y);
+        const followingY = readAnimationNumber(followingTarget.element, "y", followingTarget.y);
         displacement = followingTarget.y - followingY;
       }
 
@@ -203,8 +215,8 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         id: toast.id,
         element,
         y: previousY + displacement,
-        scale: readGsapNumber(element, "scale", 1),
-        opacity: readGsapNumber(element, "opacity", 1),
+        scale: readAnimationNumber(element, "scale", 1),
+        opacity: readAnimationNumber(element, "opacity", 1),
       });
 
       const innerElement = element.querySelector<HTMLElement>('[role="alert"]');
@@ -212,8 +224,8 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         motionTargets.push({
           id: `${toast.id}:content`,
           element: innerElement,
-          y: readGsapNumber(innerElement, "y", 0),
-          scale: readGsapNumber(innerElement, "scale", 1),
+          y: readAnimationNumber(innerElement, "y", 0),
+          scale: readAnimationNumber(innerElement, "scale", 1),
           opacity: 0,
         });
       }
@@ -226,27 +238,23 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     });
 
     if (motionTargets.length > 0) {
-      gsap.to(
+      toastAnimation.to(
         motionTargets.map((target) => target.element),
         {
           y: (index: number) => motionTargets[index].y,
           opacity: (index: number) => motionTargets[index].opacity,
-          duration: STACK_REFLOW_DURATION,
-          ease: "expo.out",
-          overwrite: "auto",
+          ...toastMotion(containerRef.current, "layout"),
           onComplete: () => completedDismissals.forEach((complete) => complete()),
         },
       );
     }
 
     if (targets.length > 0) {
-      gsap.to(
+      toastAnimation.to(
         targets.map((target) => target.element),
         {
           scale: (index: number) => targets[index].scale,
-          duration: STACK_REFLOW_DURATION,
-          ease: "expo.out",
-          overwrite: "auto",
+          ...toastMotion(containerRef.current, "layout"),
         },
       );
     }
@@ -264,20 +272,29 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         totalHeight = (firstEl?.offsetHeight || 60) + GAP * 2;
       }
 
-      gsap.to(containerRef.current, {
-        height: totalHeight,
-        duration: STACK_REFLOW_DURATION,
-        ease: "expo.out",
-        overwrite: "auto",
-      });
+      if (prevVisibleIdsRef.current.size === 0) {
+        // Establish initial geometry before measuring entrances; later height
+        // changes keep bottom-aligned wrappers pinned to the bottom boundary.
+        toastAnimation.set(containerRef.current, { height: totalHeight });
+      } else {
+        toastAnimation.to(containerRef.current, {
+          height: totalHeight,
+          ...toastMotion(containerRef.current, "layout"),
+        });
+      }
     }
+
+    entrances.forEach(({ target, direction }) => {
+      const innerElement = target.element.querySelector<HTMLElement>('[role="alert"]');
+      if (innerElement) animateToastEntrance(innerElement, direction, boundary, target.scale);
+    });
 
     toastRefsMap.current.forEach((_el, id) => {
       if (!currentActiveIds.has(id)) toastRefsMap.current.delete(id);
     });
 
     prevVisibleIdsRef.current = new Set(openToasts.map((t) => t.id));
-  }, [isTop, isHovering, toasts]);
+  }, [isTop, isHovering, toasts, boundary]);
 
   const positionedStyle: React.CSSProperties = {
     position: positioning,
@@ -309,10 +326,14 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
             key={toast.id}
             ref={(el) => {
               if (el) toastRefsMap.current.set(toast.id, el);
-              else toastRefsMap.current.delete(toast.id);
+              else {
+                toastAnimation.stop(toastRefsMap.current.get(toast.id) ?? null);
+                toastRefsMap.current.delete(toast.id);
+              }
             }}
             style={{
-              willChange: "transform, opacity",
+              // An opacity hint creates a backdrop root and blocks the Toast's page blur.
+              willChange: "transform",
               transformOrigin: isTop ? "top center" : "bottom center",
               top: isTop ? 0 : "auto",
               bottom: isTop ? "auto" : 0,
@@ -325,7 +346,6 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
             <Toast
               toast={toast}
               pauseOnHover={isHovering}
-              boundary={boundary}
               onDragStart={() => {
                 isDraggingRef.current = true;
                 if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);

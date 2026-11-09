@@ -1,8 +1,8 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle, useRef, useEffect, useCallback } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import React, { forwardRef, useImperativeHandle, useRef, useEffect, useLayoutEffect, useCallback } from "react";
+import { toastAnimation } from "./utils/animation";
+import { toastMotion } from "./utils/motion";
 import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
@@ -17,11 +17,9 @@ import { X } from "lucide-react";
 
 const DRAG_DISMISS_THRESHOLD = 100;
 const DRAG_LEFT_RESISTANCE = 20;
-const DRAG_DISMISS_DURATION = 0.15;
-const STACK_REFLOW_DURATION = 0.55;
 const SPAWN_OFFSET = 24;
 
-function getSpawnY(element: HTMLElement, direction: "top" | "bottom", boundary?: HTMLElement) {
+function getSpawnY(element: HTMLElement, direction: "top" | "bottom", boundary?: HTMLElement, scale = 1) {
   if (typeof window === "undefined") return direction === "top" ? -80 : 80;
 
   const rect = element.getBoundingClientRect();
@@ -30,10 +28,27 @@ function getSpawnY(element: HTMLElement, direction: "top" | "bottom", boundary?:
   const bottomBoundary = boundaryRect?.bottom ?? window.innerHeight;
 
   if (direction === "top") {
-    return topBoundary - rect.bottom - SPAWN_OFFSET;
+    return (topBoundary - rect.bottom - SPAWN_OFFSET) / scale;
   }
 
-  return bottomBoundary - rect.top + SPAWN_OFFSET;
+  return (bottomBoundary - rect.top + SPAWN_OFFSET) / scale;
+}
+
+/** Called by the stack after its wrapper coordinates have been established. */
+export function animateToastEntrance(
+  element: HTMLElement,
+  direction: "top" | "bottom",
+  boundary?: HTMLElement,
+  scale = 1,
+) {
+  // Clear an interrupted entrance before measuring (including Strict Mode replay).
+  toastAnimation.set(element, { y: 0 });
+  const fromY = getSpawnY(element, direction, boundary, scale);
+  toastAnimation.fromTo(
+    element,
+    { opacity: 0, y: fromY },
+    { opacity: 1, y: 0, ...toastMotion(element, "layout") },
+  );
 }
 
 interface ToastStyleSlots {
@@ -90,8 +105,6 @@ interface ToastComponentProps {
   toast: ToastData;
   /** Whether the auto-dismiss timer pauses on mouse hover */
   pauseOnHover?: boolean;
-  /** Custom containing block used as the entrance animation boundary */
-  boundary?: HTMLElement;
   onDragStart?: () => void;
   onDragEnd?: () => void;
   onDismissStart?: () => void;
@@ -104,7 +117,6 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
   {
     toast,
     pauseOnHover = false,
-    boundary,
     onDragStart,
     onDragEnd,
     onDismissStart,
@@ -162,7 +174,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
         onDismiss?.();
         dispatch({ type: "DISMISS_TOAST", toastId: id });
       };
-      gsap.killTweensOf(innerRef.current);
+      toastAnimation.stop(innerRef.current);
 
       if (onDismissAnimation) {
         onDismissAnimation(completeDismissal);
@@ -171,10 +183,9 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
       }
 
       dispatch({ type: "CLOSE_TOAST", toastId: id });
-      gsap.to(innerRef.current, {
+      toastAnimation.to(innerRef.current, {
         opacity: 0,
-        duration: STACK_REFLOW_DURATION,
-        ease: "expo.out",
+        ...toastMotion(innerRef.current, "exit"),
         onComplete: () => {
           completeDismissal();
         },
@@ -185,32 +196,14 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
     }
   }, [id, onDismiss, onDismissAnimation, onDismissEnd, onDismissStart]);
 
-  useGSAP(
+  useLayoutEffect(
     () => {
       const element = innerRef.current;
       if (!element) return;
 
-      const spawnDir = toast.spawnDirection ?? (isTop ? "top" : "bottom");
-      const fromY = getSpawnY(element, spawnDir, boundary);
-
-      gsap.fromTo(
-        element,
-        {
-          opacity: 0,
-          y: fromY,
-          scale: 0.96,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.45,
-          ease: "expo.out",
-          overwrite: "auto",
-        },
-      );
+      return () => toastAnimation.stop(element);
     },
-    { scope: innerRef },
+    [],
   );
 
   const handlePointerDown = useCallback(
@@ -220,7 +213,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
       currentDeltaRef.current = 0;
       dragPausedRef.current = true;
       onDragStart?.();
-      gsap.killTweensOf(innerRef.current);
+      toastAnimation.stop(innerRef.current);
 
       const onMove = (ev: PointerEvent) => {
         if (!innerRef.current) return;
@@ -229,10 +222,10 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
 
         if (delta >= 0) {
           const progress = Math.min(delta / DRAG_DISMISS_THRESHOLD, 1);
-          gsap.set(innerRef.current, { x: delta, opacity: 1 - progress * 0.5 });
+          toastAnimation.set(innerRef.current, { x: delta, opacity: 1 - progress * 0.5 });
         } else {
           const x = -DRAG_LEFT_RESISTANCE * (1 - Math.exp(delta / DRAG_LEFT_RESISTANCE));
-          gsap.set(innerRef.current, { x, opacity: 1 });
+          toastAnimation.set(innerRef.current, { x, opacity: 1 });
         }
       };
 
@@ -252,12 +245,11 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
             onDismissStart?.();
             // Dispatch CLOSE_TOAST immediately to signal stack adjustment
             dispatch({ type: "CLOSE_TOAST", toastId: id });
-            gsap.killTweensOf(innerRef.current);
-            gsap.to(innerRef.current, {
+            toastAnimation.stop(innerRef.current);
+            toastAnimation.to(innerRef.current, {
               x: "+=200",
               opacity: 0,
-              duration: DRAG_DISMISS_DURATION,
-              ease: "power2.in",
+              ...toastMotion(innerRef.current, "exit"),
               onComplete: () => {
                 onDismissEnd?.();
                 onDismiss?.();
@@ -271,11 +263,10 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
             dispatch({ type: "DISMISS_TOAST", toastId: id });
           }
         } else if (innerRef.current) {
-          gsap.to(innerRef.current, {
+          toastAnimation.to(innerRef.current, {
             x: 0,
             opacity: 1,
-            duration: 0.55,
-            ease: "elastic.out(1, 0.55)",
+            ...toastMotion(innerRef.current, "layout"),
           });
         }
       };
