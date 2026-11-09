@@ -298,6 +298,7 @@
     "jest-axe": "^8.0.0",
     "jsdom": "^27.3.0",
     "postcss-cli": "^11.0.0",
+    "tailwindcss": "^4.1.18",
     "shiki": "^3.17.1",
     "typescript": "^5",
     "vite": "^5.3.4",
