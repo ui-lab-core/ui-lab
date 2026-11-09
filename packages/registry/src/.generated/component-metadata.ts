@@ -1292,7 +1292,7 @@ export const generatedComponentMetadata = [
       "element": "div",
       "nativeProps": "HTML div attributes and events go to the root, not the trigger.",
       "ref": "Root HTMLDivElement.",
-      "state": "value/state.value are controlled and accept null for an explicitly empty single selection; selectedKey is the single-selection alternative and also accepts null. Omit controlled selection props for uncontrolled usage; use defaultSelectedKey/defaultSelectedKeys for initial selection. Multiple mode uses arrays. state.open is controlled; onOpenChange reports changes. defaultOpen is initial visibility; open retains legacy initial-only behavior. onSelectionChange reports selection changes.",
+      "state": "value/state.value are controlled and accept null for an explicitly empty single selection; selectedKey is the single-selection alternative and also accepts null. Omit controlled selection props for uncontrolled usage; use selected for initial selection. Multiple mode uses arrays. state.open is controlled; onOpenChange reports changes. defaultOpen is initial visibility; open retains legacy initial-only behavior. onSelectionChange reports selection changes.",
       "layout": "The trigger fills the root. Set className=\"w-full self-stretch\" on the root for a full-width form field.",
       "composition": "Trigger contains Value. Content contains List with Item options; Group can wrap related options. Separator belongs between option groups. Use Group value/onChange for segmented buttons instead of Select.",
       "accessibility": "Put aria-label or aria-labelledby on Trigger, not the root. Associate a visible Label with the Trigger id. Put aria-describedby on Trigger.",
