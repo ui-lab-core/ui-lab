@@ -1,6 +1,6 @@
 {
   "name": "@ui-lab/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Project initialization and installation CLI for UI Lab",
   "type": "module",
