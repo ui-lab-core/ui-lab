@@ -1,5 +1,5 @@
 ---
-"ui-lab-components": minor
+"ui-lab-components": patch
 ---
 
 Frame now draws its border and its shape's outline as one continuous line.

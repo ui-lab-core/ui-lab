@@ -1,6 +1,6 @@
 {
   "name": "ui-lab-theme-onyx",
-  "version": "0.4.3",
+  "version": "0.4.7",
   "license": "MIT",
   "style": "./dist/styles.css",
   "files": [
