@@ -5,7 +5,7 @@ import { getViewerEntitlement } from "@/features/entitlements/server";
 const SEGMENT_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 // Serves `/ui/icons/<variant>/<id>.svg` for the Lumen set from the private
-// library, gated like any other catalog entry. Files already in
+// library's bundled server payload, gated like any other catalog entry. Files already in
 // `public/ui/icons` are matched before this route.
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
@@ -18,7 +18,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   }
 
   if (lumenIcons.access !== "free" && !canAccessContent(lumenIcons, await getViewerEntitlement())) {
-    return new Response("Supporter access required", { status: 403 });
+    return new Response("Supporter access required", {
+      status: 403,
+      headers: { "Cache-Control": "private, no-store" },
+    });
   }
 
   const svg = await getLumenIconSvg(variant, id);
@@ -28,7 +31,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     headers: {
       "Content-Type": "image/svg+xml",
       "Cache-Control":
-        lumenIcons.access === "free" ? "public, max-age=3600" : "private, max-age=3600",
+        lumenIcons.access === "free"
+          ? "public, max-age=3600, s-maxage=86400"
+          : "private, no-store",
     },
   });
 }

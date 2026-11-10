@@ -53,10 +53,6 @@ const nextConfig: NextConfig = {
     { source: "/docs/agents-mcps-design-skill", destination: "/docs/skill", permanent: true },
   ],
   outputFileTracingRoot: nextRoot,
-  // The icon route reads SVGs at request time, which tracing can't see.
-  outputFileTracingIncludes: {
-    "/ui/icons/[...slug]": ["./node_modules/@ui-lab-core/library/content/icons/**/*.svg"],
-  },
   turbopack: {
     root: nextRoot,
   },
