@@ -1,5 +1,12 @@
 # ui-lab-registry
 
+## 0.4.8
+
+### Patch Changes
+
+- Updated dependencies [d2eceb9]
+  - ui-lab-components@0.4.8
+
 ## 0.4.3
 
 ### Patch Changes

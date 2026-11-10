@@ -1,5 +1,11 @@
 # ui-lab
 
+## 0.4.8
+
+### Patch Changes
+
+- ui-lab-registry@0.4.8
+
 ## Unreleased
 
 - Reduced the MCP surface from 17 category-specific tools to `get_component`, `search_guides`, and `search_workshop`.

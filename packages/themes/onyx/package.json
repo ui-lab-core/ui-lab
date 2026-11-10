@@ -1,6 +1,6 @@
 {
   "name": "ui-lab-theme-onyx",
-  "version": "0.4.7",
+  "version": "0.4.9",
   "license": "MIT",
   "style": "./dist/styles.css",
   "files": [
@@ -25,10 +25,11 @@
   },
   "scripts": {
     "build": "node --import tsx scripts/build.mts --out dist/styles.css",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
-    "ui-lab-components": "workspace:*"
+    "ui-lab-components": "0.4.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",

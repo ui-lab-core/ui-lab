@@ -1,6 +1,6 @@
 {
   "name": "ui-lab-registry",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Component registry and metadata management for ui-lab-components",
   "keywords": [
     "components",
@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "react-icons": "^5.5.0",
-    "ui-lab-components": "workspace:*"
+    "ui-lab-components": "0.4.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",

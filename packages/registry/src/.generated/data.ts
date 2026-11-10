@@ -130857,8 +130857,8 @@ export const generatedCorePeerDependencies = [
 ];
 
 export const packageMetadata: PackageMetadata = {
-  "version": "0.4.3",
-  "registryVersion": "0.4.3",
+  "version": "0.4.8",
+  "registryVersion": "0.4.8",
   "schemaVersion": 1,
-  "sourceHash": "d15e2279ea23e223001a1789f57a72424ec23d9603a5ec5d9a25d030735c41b2"
+  "sourceHash": "16b3a4c7f4573c44b69ae8f2b5ca0a4ccbda6dc97d5d7dd2901eab088f7321c7"
 };

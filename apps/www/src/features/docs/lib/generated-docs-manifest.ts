@@ -444,63 +444,6 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
       },
       {
         "domain": "docs",
-        "slug": "skill-build",
-        "url": "/docs/skill-build",
-        "title": "Build",
-        "label": "Build",
-        "description": "Write new UI from existing UI Lab compositions, with the design rules active for the rest of the session.",
-        "section": "Agents & MCPs",
-        "toc": [
-          {
-            "id": "what-it-does",
-            "title": "What it does",
-            "level": 2
-          },
-          {
-            "id": "load-the-rules",
-            "title": "Load the rules",
-            "level": 2
-          },
-          {
-            "id": "start-from-the-largest-composition",
-            "title": "Start from the largest composition",
-            "level": 2
-          },
-          {
-            "id": "list-the-parts",
-            "title": "List the parts",
-            "level": 2
-          },
-          {
-            "id": "write-it",
-            "title": "Write it",
-            "level": 2
-          },
-          {
-            "id": "check-against-the-pillars",
-            "title": "Check against the pillars",
-            "level": 2
-          },
-          {
-            "id": "premium-items",
-            "title": "Premium items",
-            "level": 2
-          },
-          {
-            "id": "what-you-get",
-            "title": "What you get",
-            "level": 2
-          }
-        ],
-        "isIndex": false,
-        "parent": "skill",
-        "order": 2,
-        "sectionOrder": 3,
-        "publishedOn": null,
-        "tags": []
-      },
-      {
-        "domain": "docs",
         "slug": "skill-ideate",
         "url": "/docs/skill-ideate",
         "title": "Ideate",
@@ -541,7 +484,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         ],
         "isIndex": false,
         "parent": "skill",
-        "order": 3,
+        "order": 2,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -588,7 +531,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         ],
         "isIndex": false,
         "parent": "skill",
-        "order": 4,
+        "order": 3,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -620,7 +563,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         ],
         "isIndex": false,
         "parent": "skill",
-        "order": 5,
+        "order": 4,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -672,7 +615,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         ],
         "isIndex": false,
         "parent": "skill",
-        "order": 6,
+        "order": 5,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -759,7 +702,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         ],
         "isIndex": false,
         "parent": null,
-        "order": 7,
+        "order": 6,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -931,7 +874,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         ],
         "isIndex": false,
         "parent": null,
-        "order": 8,
+        "order": 7,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -985,12 +928,6 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
                 "label": "Setup",
                 "slug": "skill-setup",
                 "url": "/docs/skill-setup"
-              },
-              {
-                "id": "skill-build",
-                "label": "Build",
-                "slug": "skill-build",
-                "url": "/docs/skill-build"
               },
               {
                 "id": "skill-ideate",
