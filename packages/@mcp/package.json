@@ -31,7 +31,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "ui-lab-registry": "0.4.8"
+    "ui-lab-registry": "workspace:*",
+    "@ui-lab-core/library": "link:../../../private/packages/library"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

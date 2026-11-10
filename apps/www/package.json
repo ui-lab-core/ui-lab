@@ -34,7 +34,7 @@
     "@fontsource-variable/work-sans": "^5.2.8",
     "@react-three/fiber": "^9.7.0",
     "@shikijs/transformers": "^3.20.0",
-    "@ui-lab-core/library": "0.1.8",
+    "@ui-lab-core/library": "link:../../../private/packages/library",
     "@ui-lab/backend": "workspace:*",
     "beautiful-mermaid": "^1.0.2",
     "clsx": "^2.1.1",
@@ -51,9 +51,9 @@
     "shiki": "^3.17.1",
     "three": "^0.186.0",
     "turndown": "^7.2.2",
-    "ui-lab-components": "0.4.8",
-    "ui-lab-registry": "0.4.8",
-    "ui-lab-theme-onyx": "0.4.9"
+    "ui-lab-components": "workspace:*",
+    "ui-lab-registry": "workspace:*",
+    "ui-lab-theme-onyx": "workspace:*"
   },
   "devDependencies": {
     "tailwindcss": "^4.1.18",
